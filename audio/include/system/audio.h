@@ -1490,6 +1490,7 @@ static inline bool audio_is_raw_data(audio_format_t format) {
     return (((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_DTS) ||
         ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_AC3) ||
         ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_E_AC3)||
+        ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_DTS_HD)||
         ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_TRUEHD));
 }
 
