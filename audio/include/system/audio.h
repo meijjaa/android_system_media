@@ -336,7 +336,8 @@ typedef enum {
     AUDIO_FORMAT_APTX                = 0x21000000UL,
     AUDIO_FORMAT_APTX_HD             = 0x22000000UL,
 
-    AUDIO_FORMAT_DOLBY_TRUEHD        = 0x0E000000UL,
+    AUDIO_FORMAT_TRUEHD              = 0x0E000000UL,
+    AUDIO_FORMAT_DOLBY_TRUEHD        = 0x0F000000UL,
     AUDIO_FORMAT_MAIN_MASK           = 0xFF000000UL, /* Deprecated. Use audio_get_main_format() */
     AUDIO_FORMAT_SUB_MASK            = 0x00FFFFFFUL,
 
@@ -811,6 +812,8 @@ enum {
     /* audio bus implemented by the audio system (e.g an MOST stereo channel) */
     AUDIO_DEVICE_IN_BUS                   = AUDIO_DEVICE_BIT_IN | 0x100000,
     AUDIO_DEVICE_IN_PROXY                 = AUDIO_DEVICE_BIT_IN | 0x1000000,
+    /* dia remote for dialogue BT input */
+    AUDIO_DEVICE_IN_DIA_REMOTE            = AUDIO_DEVICE_BIT_IN | 0x200000,
     AUDIO_DEVICE_IN_DEFAULT               = AUDIO_DEVICE_BIT_IN | AUDIO_DEVICE_BIT_DEFAULT,
 
     AUDIO_DEVICE_IN_ALL     = (AUDIO_DEVICE_IN_COMMUNICATION |
@@ -835,6 +838,7 @@ enum {
                                AUDIO_DEVICE_IN_IP |
                                AUDIO_DEVICE_IN_BUS |
                                AUDIO_DEVICE_IN_PROXY |
+                               AUDIO_DEVICE_IN_DIA_REMOTE |
                                AUDIO_DEVICE_IN_DEFAULT),
     AUDIO_DEVICE_IN_ALL_SCO = AUDIO_DEVICE_IN_BLUETOOTH_SCO_HEADSET,
     AUDIO_DEVICE_IN_ALL_USB  = (AUDIO_DEVICE_IN_USB_ACCESSORY |
@@ -1587,6 +1591,7 @@ static inline bool audio_is_valid_format(audio_format_t format)
                 format != AUDIO_FORMAT_PCM_24_BIT_OFFLOAD) {
             return false;
         }
+    case AUDIO_FORMAT_TRUEHD:
     case AUDIO_FORMAT_DOLBY_TRUEHD:
         return true;
     default:
@@ -1633,6 +1638,14 @@ static inline bool audio_is_offload_pcm(audio_format_t format)
     return ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_PCM_OFFLOAD);
 #endif
     return false;
+}
+
+static inline bool audio_is_raw_data(audio_format_t format) {
+    return (((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_DTS) ||
+        ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_AC3) ||
+        ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_E_AC3)||
+        ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_DTS_HD)||
+        ((format & AUDIO_FORMAT_MAIN_MASK) == AUDIO_FORMAT_TRUEHD));
 }
 
 static inline size_t audio_bytes_per_sample(audio_format_t format)
